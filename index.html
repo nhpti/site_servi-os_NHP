@@ -1,511 +1,330 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catálogo de Produtos — Novo Horizonte Promotora</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a1a; padding: 24px 16px; min-height: 100vh; }
-  .wrapper { max-width: 1200px; margin: 0 auto; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', var(--font-sans); background: #f0f4ff; }
+.wrap { padding: 0 0 32px; }
 
-  .header {
-    background: #1a3fa8;
-    padding: 22px 28px;
-    border-radius: 14px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .header-title { color: #fff; font-size: 18px; font-weight: 600; }
-  .header-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 4px; }
-  .header-logo {
-    background: rgba(255,255,255,0.15);
-    border-radius: 8px;
-    padding: 8px 16px;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
+.header {
+  background: linear-gradient(135deg, #0B3787 0%, #004BD4 60%, #53B4F2 100%);
+  padding: 20px 24px;
+  border-radius: var(--border-radius-lg);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: 40%;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.logo-wrap {
+  width: 48px; height: 48px;
+  background: #004BD4;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  position: relative; z-index: 1;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+.logo-wrap svg { width: 34px; height: 34px; }
+.header-text { position: relative; z-index: 1; }
+.header-title { color: #fff; font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+.header-sub { color: rgba(255,255,255,0.65); font-size: 12px; margin-top: 2px; }
 
-  .tabs {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-  }
-  .tab-btn {
-    background: #fff;
-    border: 1px solid #e2e2e0;
-    border-radius: 100px;
-    padding: 8px 18px;
-    font-size: 13px;
-    color: #555;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-    font-family: inherit;
-    font-weight: 500;
-  }
-  .tab-btn:hover { background: #f0f0ee; color: #1a1a1a; }
-  .tab-btn.active { background: #1a3fa8; color: #fff; border-color: #1a3fa8; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab-btn {
+  background: #fff;
+  border: 1.5px solid #dde5f7;
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #5572a8;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  font-family: inherit;
+  letter-spacing: 0.2px;
+}
+.tab-btn:hover { border-color: #004BD4; color: #004BD4; }
+.tab-btn.active {
+  background: linear-gradient(135deg, #0B3787, #004BD4);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(0,75,212,0.3);
+}
 
-  .product-card {
-    background: #fff;
-    border: 1px solid #e2e2e0;
-    border-radius: 14px;
-    overflow: hidden;
-    display: none;
-  }
-  .product-card.visible { display: block; }
-
-  .card-hero {
-    padding: 24px 28px;
-    border-bottom: 1px solid #f0f0ee;
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-  }
-  .card-icon {
-    width: 54px;
-    height: 54px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 26px;
-  }
-  .card-hero-text { flex: 1; }
-  .card-title { font-size: 18px; font-weight: 600; color: #1a1a1a; margin-bottom: 5px; }
-  .card-tagline { font-size: 14px; color: #666; line-height: 1.6; }
-
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-  .tag {
-    font-size: 12px;
-    padding: 4px 12px;
-    border-radius: 100px;
-    border: 1px solid #e2e2e0;
-    color: #666;
-    background: #fafaf9;
-  }
-
-  .card-body { padding: 22px 28px; }
-
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
-  .info-block { background: #f8f8f6; border-radius: 10px; padding: 14px 16px; }
-  .info-block-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 5px; font-weight: 600; }
-  .info-block-value { font-size: 14px; color: #1a1a1a; line-height: 1.5; font-weight: 500; }
-
-  .section-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; margin-top: 18px; font-weight: 600; }
-
-  .req-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-  .req-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #333; line-height: 1.6; }
-  .req-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
-
-  .vantagens { display: flex; flex-direction: column; gap: 7px; }
-  .vantagem-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 14px;
-    color: #333;
-    line-height: 1.6;
-    padding: 11px 14px;
-    background: #f8f8f6;
-    border-radius: 10px;
-  }
-  .check { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
-
-  .cta-bar {
-    margin-top: 22px;
-    border-radius: 10px;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .cta-text { font-size: 13px; color: rgba(255,255,255,0.9); flex: 1; line-height: 1.6; }
-
-  .alert-box {
-    border-left: 3px solid;
-    padding: 13px 16px;
-    border-radius: 0 10px 10px 0;
-    margin-top: 14px;
-    font-size: 13px;
-    line-height: 1.7;
-  }
-
-  .faq-item {
-    padding: 12px 14px;
-    background: #f8f8f6;
-    border-radius: 10px;
-    margin-bottom: 7px;
-  }
-  .faq-q { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
-  .faq-a { font-size: 13px; color: #555; line-height: 1.6; }
-
-  @media (max-width: 520px) {
-    .two-col { grid-template-columns: 1fr; }
-    .card-hero { flex-direction: column; gap: 12px; }
-    .header { flex-direction: column; gap: 12px; align-items: flex-start; }
-    body { padding: 16px 12px; }
-    .card-body, .card-hero { padding: 18px 18px; }
-  }
+.product-card { background: #fff; border: 1.5px solid #e8eef9; border-radius: 16px; overflow: hidden; display: none; box-shadow: 0 2px 16px rgba(0,75,212,0.06); }
+.product-card.visible { display: block; }
+.card-hero { padding: 22px 24px; border-bottom: 1.5px solid #f0f4ff; display: flex; gap: 16px; align-items: flex-start; }
+.card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.card-hero-text { flex: 1; }
+.card-title { font-size: 18px; font-weight: 800; color: #0B3787; margin-bottom: 4px; letter-spacing: -0.3px; }
+.card-tagline { font-size: 13px; color: #6b7db3; line-height: 1.6; }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; border: 1.5px solid #dde5f7; color: #5572a8; background: #f5f8ff; }
+.card-body { padding: 20px 24px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.info-block { background: linear-gradient(135deg, #f5f8ff 0%, #eef2ff 100%); border-radius: 12px; padding: 14px; border: 1px solid #e0e8ff; }
+.info-block-label { font-size: 10px; color: #8899cc; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; font-weight: 700; }
+.info-block-value { font-size: 13px; color: #1a2e6b; line-height: 1.5; font-weight: 500; }
+.section-label { font-size: 10px; color: #8899cc; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; margin-top: 18px; font-weight: 700; }
+.req-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.req-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #2d3e6e; line-height: 1.6; }
+.req-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+.vantagens { display: flex; flex-direction: column; gap: 6px; }
+.vantagem-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #2d3e6e; line-height: 1.5; padding: 10px 14px; background: #f5f8ff; border-radius: 10px; border: 1px solid #e0e8ff; }
+.cta-bar { margin-top: 20px; border-radius: 12px; padding: 16px 20px; }
+.cta-text { font-size: 13px; color: rgba(255,255,255,0.92); line-height: 1.6; }
+.alert-box { border-left: 3px solid; padding: 12px 16px; border-radius: 0 10px 10px 0; margin-top: 12px; font-size: 13px; line-height: 1.6; }
 </style>
-</head>
-<body>
-<div class="wrapper">
 
-  <div class="header">
-    <div>
-      <div class="header-title">Catálogo de Produtos</div>
-      <div class="header-sub">Material estratégico para parceiros — Novo Horizonte Promotora</div>
-    </div>
-    <div class="header-logo">NHP</div>
+<div class="wrap">
+
+<div class="header">
+  <div class="logo-wrap">
+    <!-- Logo fiel: arco + 3 montanhas brancas -->
+    <svg viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Arco principal espesso -->
+      <path d="M6 52 C6 26 18 8 40 8 C62 8 74 26 74 52" stroke="white" stroke-width="11" stroke-linecap="round" fill="none"/>
+      <!-- Montanha central (maior) -->
+      <path d="M40 16 L30 52 L50 52 Z" fill="white"/>
+      <!-- Montanha esquerda (menor) -->
+      <path d="M25 30 L16 52 L34 52 Z" fill="white"/>
+      <!-- Montanha direita (menor) -->
+      <path d="M55 30 L46 52 L64 52 Z" fill="white"/>
+      <!-- Linha base para cobrir sobreposição -->
+      <rect x="6" y="50" width="68" height="6" fill="#004BD4"/>
+    </svg>
   </div>
-
-  <div class="tabs">
-    <button class="tab-btn active" onclick="show(0)">💳 FGTS</button>
-    <button class="tab-btn" onclick="show(1)">📋 Crédito CLT</button>
-    <button class="tab-btn" onclick="show(2)">🏠 Bolsa Família</button>
-    <button class="tab-btn" onclick="show(3)">👴 Consignado INSS</button>
-    <button class="tab-btn" onclick="show(4)">🚗 Garantia Veicular</button>
+  <div class="header-text">
+    <div class="header-title">Novo Horizonte Promotora</div>
+    <div class="header-sub">Catálogo de Produtos · Material para Parceiros</div>
   </div>
-
-  <!-- FGTS -->
-  <div class="product-card visible" id="p0">
-    <div class="card-hero">
-      <div class="card-icon" style="background:#dbeafe;">💳</div>
-      <div class="card-hero-text">
-        <div class="card-title">Antecipação do FGTS</div>
-        <div class="card-tagline">Transforme o saldo parado no FGTS em dinheiro na conta — rápido, digital e sem parcela mensal.</div>
-        <div class="tags">
-          <span class="tag">Aceita negativado</span>
-          <span class="tag">100% digital</span>
-          <span class="tag">Sem boleto</span>
-          <span class="tag">Dinheiro em minutos</span>
-        </div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="two-col">
-        <div class="info-block">
-          <div class="info-block-label">Saldo mínimo</div>
-          <div class="info-block-value">R$150 a R$200 no FGTS</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Saques antecipáveis</div>
-          <div class="info-block-value">Até 10 saques-aniversário</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Juros</div>
-          <div class="info-block-value">Menores que cartão e cheque especial</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Desconto</div>
-          <div class="info-block-value">Direto no FGTS, só no mês do aniversário</div>
-        </div>
-      </div>
-
-      <div class="section-label">Requisitos principais</div>
-      <ul class="req-list">
-        <li><span class="req-dot" style="background:#1a3fa8;"></span>Ter mais de 18 anos</li>
-        <li><span class="req-dot" style="background:#1a3fa8;"></span>Ter trabalhado de carteira assinada e possuir saldo no FGTS</li>
-        <li><span class="req-dot" style="background:#1a3fa8;"></span>Estar na modalidade Saque-Aniversário (pode alterar pelo app FGTS)</li>
-        <li><span class="req-dot" style="background:#1a3fa8;"></span>Conta bancária válida — Caixa Tem não é aceito</li>
-      </ul>
-
-      <div class="section-label">Vantagens para destacar</div>
-      <div class="vantagens">
-        <div class="vantagem-item"><span class="check" style="color:#1a3fa8;">✓</span>Disponível mesmo para negativados</div>
-        <div class="vantagem-item"><span class="check" style="color:#1a3fa8;">✓</span>Processo 100% digital — valor pode cair em minutos</div>
-        <div class="vantagem-item"><span class="check" style="color:#1a3fa8;">✓</span>Sem boleto ou parcela mensal — desconto só no FGTS</div>
-        <div class="vantagem-item"><span class="check" style="color:#1a3fa8;">✓</span>Flexibilidade: cliente escolhe quantas parcelas antecipar</div>
-      </div>
-
-      <div class="section-label">Gatilhos para divulgação</div>
-      <ul class="req-list">
-        <li><span class="req-dot" style="background:#aaa;"></span>"Você sabia que pode transformar o dinheiro parado no FGTS em renda extra?"</li>
-        <li><span class="req-dot" style="background:#aaa;"></span>"Quite suas dívidas usando o seu FGTS"</li>
-        <li><span class="req-dot" style="background:#aaa;"></span>"Antecipe seu FGTS mesmo negativado"</li>
-      </ul>
-
-      <div class="cta-bar" style="background:#1a3fa8;">
-        <div class="cta-text">💬 CTA sugerido: "Quer saber se tem saldo disponível e quanto pode antecipar? Clique no link e fale agora com um especialista da Novo Horizonte."</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Crédito CLT -->
-  <div class="product-card" id="p1">
-    <div class="card-hero">
-      <div class="card-icon" style="background:#dcfce7;">📋</div>
-      <div class="card-hero-text">
-        <div class="card-title">Crédito do Trabalhador (CLT)</div>
-        <div class="card-tagline">Empréstimo consignado para trabalhadores CLT — parcelas fixas descontadas direto no salário, com juros baixos.</div>
-        <div class="tags">
-          <span class="tag">Aceita negativado</span>
-          <span class="tag">Desconto em folha</span>
-          <span class="tag">Portabilidade</span>
-          <span class="tag">100% digital</span>
-        </div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="two-col">
-        <div class="info-block">
-          <div class="info-block-label">Margem consignável</div>
-          <div class="info-block-value">Até 35% do salário</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Garantia adicional</div>
-          <div class="info-block-value">FGTS como garantia opcional (reduz taxa)</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Parcelas</div>
-          <div class="info-block-value">Fixas, sem desconto no 13º salário</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Portabilidade</div>
-          <div class="info-block-value">Disponível para trocar dívidas caras</div>
-        </div>
-      </div>
-
-      <div class="section-label">Quem pode contratar</div>
-      <ul class="req-list">
-        <li><span class="req-dot" style="background:#16a34a;"></span>Empregados CLT (inclusive domésticos e rurais)</li>
-        <li><span class="req-dot" style="background:#16a34a;"></span>Empregados de MEI</li>
-        <li><span class="req-dot" style="background:#16a34a;"></span>Diretores não empregados com direito ao FGTS</li>
-        <li><span class="req-dot" style="background:#16a34a;"></span>Pessoas com restrição no nome (sujeito à análise do banco)</li>
-      </ul>
-
-      <div class="section-label">Vantagens para destacar</div>
-      <div class="vantagens">
-        <div class="vantagem-item"><span class="check" style="color:#16a34a;">✓</span>Juros mais baixos que empréstimos pessoais</div>
-        <div class="vantagem-item"><span class="check" style="color:#16a34a;">✓</span>Parcelas seguras — desconto automático, sem risco de atraso</div>
-        <div class="vantagem-item"><span class="check" style="color:#16a34a;">✓</span>Opção de refinanciamento: troque dívidas caras por consignado</div>
-        <div class="vantagem-item"><span class="check" style="color:#16a34a;">✓</span>Processo online com suporte de especialista</div>
-      </div>
-
-      <div class="section-label">Público-alvo</div>
-      <ul class="req-list">
-        <li><span class="req-dot" style="background:#aaa;"></span>Trabalhadores CLT de baixa a média renda</li>
-        <li><span class="req-dot" style="background:#aaa;"></span>Pessoas endividadas pagando caro no cartão ou cheque especial</li>
-        <li><span class="req-dot" style="background:#aaa;"></span>Quem quer segurança com parcelas fixas e prazo longo</li>
-      </ul>
-
-      <div class="cta-bar" style="background:#16a34a;">
-        <div class="cta-text">💬 CTA sugerido: "Você trabalha de carteira assinada e quer crédito com juros baixos e parcelas fixas? Fale com a Novo Horizonte e simule agora."</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bolsa Família -->
-  <div class="product-card" id="p2">
-    <div class="card-hero">
-      <div class="card-icon" style="background:#fef9c3;">🏠</div>
-      <div class="card-hero-text">
-        <div class="card-title">Empréstimo Bolsa Família</div>
-        <div class="card-tagline">Crédito rápido para beneficiários ativos do Bolsa Família — tudo digital, sem sair de casa.</div>
-        <div class="tags">
-          <span class="tag">Sem sair de casa</span>
-          <span class="tag">Caixa Tem</span>
-          <span class="tag">Processo rápido</span>
-        </div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="two-col">
-        <div class="info-block">
-          <div class="info-block-label">Valor disponível</div>
-          <div class="info-block-value">R$550 a R$750 (conforme NIS)</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Benefício mínimo</div>
-          <div class="info-block-value">Acima de R$401,00/mês</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Desconto</div>
-          <div class="info-block-value">Direto no Caixa Tem</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Recebimento</div>
-          <div class="info-block-value">Obrigatório via Caixa Tem</div>
-        </div>
-      </div>
-
-      <div class="section-label">Requisitos</div>
-      <ul class="req-list">
-        <li><span class="req-dot" style="background:#ca8a04;"></span>Ter mais de 18 anos</li>
-        <li><span class="req-dot" style="background:#ca8a04;"></span>Ser beneficiário ativo do Bolsa Família</li>
-        <li><span class="req-dot" style="background:#ca8a04;"></span>Receber acima de R$401,00 no benefício</li>
-        <li><span class="req-dot" style="background:#ca8a04;"></span>Receber pelo Caixa Tem</li>
-      </ul>
-
-      <div class="section-label">Documentação necessária</div>
-      <ul class="req-list">
-        <li><span class="req-dot" style="background:#aaa;"></span>Documento com foto (RG ou CNH)</li>
-        <li><span class="req-dot" style="background:#aaa;"></span>Comprovante de endereço (CEP)</li>
-        <li><span class="req-dot" style="background:#aaa;"></span>Extrato do Caixa Tem</li>
-      </ul>
-
-      <div class="alert-box" style="background:#fef9c3; border-color:#ca8a04; color:#713f12;">
-        <strong>Atenção:</strong> Se o beneficiário recebe em conta da Caixa mas não pelo Caixa Tem, pode solicitar a alteração direto na agência — é um direito do beneficiário.
-      </div>
-
-      <div class="cta-bar" style="background:#ca8a04; margin-top:22px;">
-        <div class="cta-text">💬 CTA sugerido: "Você recebe Bolsa Família e precisa de crédito rápido sem sair de casa? Clique no link e fale com um especialista agora."</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Consignado INSS -->
-  <div class="product-card" id="p3">
-    <div class="card-hero">
-      <div class="card-icon" style="background:#ede9fe;">👴</div>
-      <div class="card-hero-text">
-        <div class="card-title">Consignado INSS</div>
-        <div class="card-tagline">Crédito com desconto direto no benefício — condições especiais para aposentados e pensionistas.</div>
-        <div class="tags">
-          <span class="tag">Até 96x</span>
-          <span class="tag">Juros menores</span>
-          <span class="tag">Desconto automático</span>
-          <span class="tag">Até 45% da renda</span>
-        </div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="two-col">
-        <div class="info-block">
-          <div class="info-block-label">Prazo</div>
-          <div class="info-block-value">Parcelas em até 96x</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Margem consignável</div>
-          <div class="info-block-value">35% a 45% do benefício</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Público</div>
-          <div class="info-block-value">Aposentados e pensionistas até 75 anos</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Desconto</div>
-          <div class="info-block-value">Automático no benefício mensal</div>
-        </div>
-      </div>
-
-      <div class="section-label">Quem pode contratar</div>
-      <ul class="req-list">
-        <li><span class="req-dot" style="background:#7c3aed;"></span>Aposentados e pensionistas do INSS (até 75 anos)</li>
-        <li><span class="req-dot" style="background:#7c3aed;"></span>Beneficiários do BPC/LOAS (sem representante legal)</li>
-        <li><span class="req-dot" style="background:#7c3aed;"></span>Servidores públicos e militares</li>
-      </ul>
-
-      <div class="alert-box" style="background:#ede9fe; border-color:#7c3aed; color:#3b0764;">
-        <strong>Novidade 2025:</strong> A partir de 04/09/2025, quem não tem biometria no TSE pode desbloquear via login bancário. Melhores horários no app Meu INSS: cedo pela manhã ou à noite.
-      </div>
-
-      <div class="section-label">Vantagens para destacar</div>
-      <div class="vantagens">
-        <div class="vantagem-item"><span class="check" style="color:#7c3aed;">✓</span>Taxas menores que empréstimos pessoais</div>
-        <div class="vantagem-item"><span class="check" style="color:#7c3aed;">✓</span>Até 96 meses para pagar — parcelas mais leves</div>
-        <div class="vantagem-item"><span class="check" style="color:#7c3aed;">✓</span>Desconto automático, sem risco de esquecer de pagar</div>
-      </div>
-
-      <div class="cta-bar" style="background:#7c3aed;">
-        <div class="cta-text">💬 CTA sugerido: "Quer saber se você tem margem disponível? Clique no link e fale agora com um especialista da Novo Horizonte."</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Garantia Veicular -->
-  <div class="product-card" id="p4">
-    <div class="card-hero">
-      <div class="card-icon" style="background:#fee2e2;">🚗</div>
-      <div class="card-hero-text">
-        <div class="card-title">Crédito com Garantia Veicular</div>
-        <div class="card-tagline">Use o valor do seu carro quitado sem precisar vender — dinheiro rápido, seguro, com o carro na sua garagem.</div>
-        <div class="tags">
-          <span class="tag">Carro continua seu</span>
-          <span class="tag">Até R$150 mil</span>
-          <span class="tag">A partir de 1,60% a.m.</span>
-          <span class="tag">Sem comprovação de renda</span>
-        </div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="two-col">
-        <div class="info-block">
-          <div class="info-block-label">Valor liberado</div>
-          <div class="info-block-value">Até 100% do valor do veículo (até R$150 mil)</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Taxa</div>
-          <div class="info-block-value">A partir de 1,60% ao mês</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Prazo de liberação</div>
-          <div class="info-block-value">Em até 24 horas após aprovação</div>
-        </div>
-        <div class="info-block">
-          <div class="info-block-label">Veículos aceitos</div>
-          <div class="info-block-value">Leves até 18 anos / Utilitários até 5 anos</div>
-        </div>
-      </div>
-
-      <div class="section-label">Requisitos</div>
-      <ul class="req-list">
-        <li><span class="req-dot" style="background:#dc2626;"></span>Veículo quitado no nome do solicitante</li>
-        <li><span class="req-dot" style="background:#dc2626;"></span>Análise automática por CPF e placa</li>
-        <li><span class="req-dot" style="background:#dc2626;"></span>Biometria facial e vistoria digital pelo celular</li>
-        <li><span class="req-dot" style="background:#dc2626;"></span>Sem comprovação de renda obrigatória</li>
-      </ul>
-
-      <div class="section-label">Dúvidas mais comuns</div>
-      <div class="faq-item">
-        <div class="faq-q">Vou perder o carro?</div>
-        <div class="faq-a">Não. O carro continua no nome do cliente e pode ser usado normalmente durante todo o contrato.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Demora pra cair o dinheiro?</div>
-        <div class="faq-a">Após aprovação, o valor pode cair em até 24 horas.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Posso usar o dinheiro pra qualquer coisa?</div>
-        <div class="faq-a">Sim. O dinheiro é livre — quitar dívidas, investir, reformar, abrir negócio.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Posso quitar antes?</div>
-        <div class="faq-a">Sim. É possível antecipar parcelas e pagar menos juros.</div>
-      </div>
-
-      <div class="section-label">Gatilhos para divulgação</div>
-      <ul class="req-list">
-        <li><span class="req-dot" style="background:#aaa;"></span>"Dinheiro rápido, com o carro ainda na sua garagem."</li>
-        <li><span class="req-dot" style="background:#aaa;"></span>"Seu carro pode valer mais do que você imagina!"</li>
-        <li><span class="req-dot" style="background:#aaa;"></span>"Quem tem carro quitado tem crédito. E crédito rápido."</li>
-      </ul>
-
-      <div class="cta-bar" style="background:#dc2626;">
-        <div class="cta-text">💬 CTA sugerido: "Descubra quanto seu carro pode liberar. Clique no link e fale agora com um especialista da Novo Horizonte."</div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
+<div class="tabs">
+  <button class="tab-btn active" onclick="show(0)">💳 FGTS</button>
+  <button class="tab-btn" onclick="show(1)">📋 Crédito CLT</button>
+  <button class="tab-btn" onclick="show(2)">🏠 Bolsa Família</button>
+  <button class="tab-btn" onclick="show(3)">👴 Consignado INSS</button>
+  <button class="tab-btn" onclick="show(4)">🚗 Garantia Veicular</button>
+</div>
+
+<!-- FGTS -->
+<div class="product-card visible" id="p0">
+  <div class="card-hero" style="background:linear-gradient(135deg,#f0f6ff,#fff);">
+    <div class="card-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);">💳</div>
+    <div class="card-hero-text">
+      <div class="card-title">Antecipação do FGTS</div>
+      <div class="card-tagline">Transforme o saldo parado no FGTS em dinheiro na conta — rápido, digital e sem parcela mensal.</div>
+      <div class="tags"><span class="tag">Aceita negativado</span><span class="tag">100% digital</span><span class="tag">Sem boleto</span><span class="tag">Dinheiro em minutos</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="two-col">
+      <div class="info-block"><div class="info-block-label">Saldo mínimo</div><div class="info-block-value">R$150 a R$200 no FGTS</div></div>
+      <div class="info-block"><div class="info-block-label">Saques antecipáveis</div><div class="info-block-value">Até 10 saques-aniversário</div></div>
+      <div class="info-block"><div class="info-block-label">Juros</div><div class="info-block-value">Menores que cartão e cheque especial</div></div>
+      <div class="info-block"><div class="info-block-label">Desconto</div><div class="info-block-value">Direto no FGTS, só no mês do aniversário</div></div>
+    </div>
+    <div class="section-label">Requisitos principais</div>
+    <ul class="req-list">
+      <li><span class="req-dot" style="background:#004BD4;"></span>Ter mais de 18 anos</li>
+      <li><span class="req-dot" style="background:#004BD4;"></span>Ter trabalhado de carteira assinada e possuir saldo no FGTS</li>
+      <li><span class="req-dot" style="background:#004BD4;"></span>Estar na modalidade Saque-Aniversário (pode alterar pelo app FGTS)</li>
+      <li><span class="req-dot" style="background:#004BD4;"></span>Conta bancária válida — Caixa Tem não é aceito</li>
+    </ul>
+    <div class="section-label">Vantagens para destacar</div>
+    <div class="vantagens">
+      <div class="vantagem-item"><span style="color:#004BD4;font-weight:700;">✓</span>Disponível mesmo para negativados</div>
+      <div class="vantagem-item"><span style="color:#004BD4;font-weight:700;">✓</span>Processo 100% digital — valor pode cair em minutos</div>
+      <div class="vantagem-item"><span style="color:#004BD4;font-weight:700;">✓</span>Sem boleto ou parcela mensal — desconto só no FGTS</div>
+      <div class="vantagem-item"><span style="color:#004BD4;font-weight:700;">✓</span>Flexibilidade: cliente escolhe quantas parcelas antecipar</div>
+    </div>
+    <div class="section-label">Gatilhos para divulgação</div>
+    <ul class="req-list">
+      <li><span class="req-dot" style="background:#aaa;"></span>"Você sabia que pode transformar o dinheiro parado no FGTS em renda extra?"</li>
+      <li><span class="req-dot" style="background:#aaa;"></span>"Quite suas dívidas usando o seu FGTS"</li>
+      <li><span class="req-dot" style="background:#aaa;"></span>"Antecipe seu FGTS mesmo negativado"</li>
+    </ul>
+    <div class="cta-bar" style="background:linear-gradient(135deg,#0B3787,#004BD4);">
+      <div class="cta-text">💬 <strong>CTA sugerido:</strong> "Quer saber se tem saldo disponível e quanto pode antecipar? Clique no link e fale agora com um especialista da Novo Horizonte."</div>
+    </div>
+  </div>
+</div>
+
+<!-- CLT -->
+<div class="product-card" id="p1">
+  <div class="card-hero" style="background:linear-gradient(135deg,#f0fdf4,#fff);">
+    <div class="card-icon" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);">📋</div>
+    <div class="card-hero-text">
+      <div class="card-title" style="color:#166534;">Crédito do Trabalhador (CLT)</div>
+      <div class="card-tagline">Empréstimo consignado para trabalhadores CLT — parcelas fixas descontadas direto no salário, com juros baixos.</div>
+      <div class="tags"><span class="tag">Aceita negativado</span><span class="tag">Desconto em folha</span><span class="tag">Portabilidade</span><span class="tag">100% digital</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="two-col">
+      <div class="info-block" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0;"><div class="info-block-label">Margem consignável</div><div class="info-block-value">Até 35% do salário</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0;"><div class="info-block-label">Garantia adicional</div><div class="info-block-value">FGTS como garantia opcional (reduz taxa)</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0;"><div class="info-block-label">Parcelas</div><div class="info-block-value">Fixas, sem desconto no 13º salário</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0;"><div class="info-block-label">Portabilidade</div><div class="info-block-value">Disponível para trocar dívidas caras</div></div>
+    </div>
+    <div class="section-label">Quem pode contratar</div>
+    <ul class="req-list">
+      <li><span class="req-dot" style="background:#16a34a;"></span>Empregados CLT (inclusive domésticos e rurais)</li>
+      <li><span class="req-dot" style="background:#16a34a;"></span>Empregados de MEI</li>
+      <li><span class="req-dot" style="background:#16a34a;"></span>Diretores não empregados com direito ao FGTS</li>
+      <li><span class="req-dot" style="background:#16a34a;"></span>Pessoas com restrição no nome (sujeito à análise do banco)</li>
+    </ul>
+    <div class="section-label">Vantagens para destacar</div>
+    <div class="vantagens">
+      <div class="vantagem-item" style="background:#f0fdf4;border-color:#bbf7d0;"><span style="color:#16a34a;font-weight:700;">✓</span>Juros mais baixos que empréstimos pessoais</div>
+      <div class="vantagem-item" style="background:#f0fdf4;border-color:#bbf7d0;"><span style="color:#16a34a;font-weight:700;">✓</span>Parcelas seguras — desconto automático, sem risco de atraso</div>
+      <div class="vantagem-item" style="background:#f0fdf4;border-color:#bbf7d0;"><span style="color:#16a34a;font-weight:700;">✓</span>Opção de refinanciamento: troque dívidas caras por consignado</div>
+      <div class="vantagem-item" style="background:#f0fdf4;border-color:#bbf7d0;"><span style="color:#16a34a;font-weight:700;">✓</span>Processo online com suporte de especialista</div>
+    </div>
+    <div class="section-label">Público-alvo</div>
+    <ul class="req-list">
+      <li><span class="req-dot" style="background:#aaa;"></span>Trabalhadores CLT de baixa a média renda</li>
+      <li><span class="req-dot" style="background:#aaa;"></span>Pessoas endividadas pagando caro no cartão ou cheque especial</li>
+      <li><span class="req-dot" style="background:#aaa;"></span>Quem quer segurança com parcelas fixas e prazo longo</li>
+    </ul>
+    <div class="cta-bar" style="background:linear-gradient(135deg,#14532d,#16a34a);">
+      <div class="cta-text">💬 <strong>CTA sugerido:</strong> "Você trabalha de carteira assinada e quer crédito com juros baixos e parcelas fixas? Fale com a Novo Horizonte e simule agora."</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bolsa Família -->
+<div class="product-card" id="p2">
+  <div class="card-hero" style="background:linear-gradient(135deg,#fffbeb,#fff);">
+    <div class="card-icon" style="background:linear-gradient(135deg,#fef9c3,#fef08a);">🏠</div>
+    <div class="card-hero-text">
+      <div class="card-title" style="color:#854d0e;">Empréstimo Bolsa Família</div>
+      <div class="card-tagline">Crédito rápido para beneficiários ativos do Bolsa Família — tudo digital, sem sair de casa.</div>
+      <div class="tags"><span class="tag">Sem sair de casa</span><span class="tag">Caixa Tem</span><span class="tag">Processo rápido</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="two-col">
+      <div class="info-block" style="background:linear-gradient(135deg,#fffbeb,#fef9c3);border-color:#fde68a;"><div class="info-block-label">Valor disponível</div><div class="info-block-value">R$550 a R$750 (conforme NIS)</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#fffbeb,#fef9c3);border-color:#fde68a;"><div class="info-block-label">Benefício mínimo</div><div class="info-block-value">Acima de R$401,00/mês</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#fffbeb,#fef9c3);border-color:#fde68a;"><div class="info-block-label">Desconto</div><div class="info-block-value">Direto no Caixa Tem</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#fffbeb,#fef9c3);border-color:#fde68a;"><div class="info-block-label">Recebimento</div><div class="info-block-value">Obrigatório via Caixa Tem</div></div>
+    </div>
+    <div class="section-label">Requisitos</div>
+    <ul class="req-list">
+      <li><span class="req-dot" style="background:#ca8a04;"></span>Ter mais de 18 anos</li>
+      <li><span class="req-dot" style="background:#ca8a04;"></span>Ser beneficiário ativo do Bolsa Família</li>
+      <li><span class="req-dot" style="background:#ca8a04;"></span>Receber acima de R$401,00 no benefício</li>
+      <li><span class="req-dot" style="background:#ca8a04;"></span>Receber pelo Caixa Tem</li>
+    </ul>
+    <div class="section-label">Documentação necessária</div>
+    <ul class="req-list">
+      <li><span class="req-dot" style="background:#aaa;"></span>Documento com foto (RG ou CNH)</li>
+      <li><span class="req-dot" style="background:#aaa;"></span>Comprovante de endereço (CEP)</li>
+      <li><span class="req-dot" style="background:#aaa;"></span>Extrato do Caixa Tem</li>
+    </ul>
+    <div class="alert-box" style="background:#fffbeb;border-color:#ca8a04;color:#713f12;">
+      <strong>Atenção:</strong> Se o beneficiário recebe em conta da Caixa mas não pelo Caixa Tem, pode solicitar a alteração direto na agência — é um direito do beneficiário.
+    </div>
+    <div class="cta-bar" style="background:linear-gradient(135deg,#713f12,#ca8a04);margin-top:20px;">
+      <div class="cta-text">💬 <strong>CTA sugerido:</strong> "Você recebe Bolsa Família e precisa de crédito rápido sem sair de casa? Clique no link e fale com um especialista agora."</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONSIGNADO INSS -->
+<div class="product-card" id="p3">
+  <div class="card-hero" style="background:linear-gradient(135deg,#f5f3ff,#fff);">
+    <div class="card-icon" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);">👴</div>
+    <div class="card-hero-text">
+      <div class="card-title" style="color:#4c1d95;">Consignado INSS</div>
+      <div class="card-tagline">Crédito para aposentados e pensionistas com parcelas descontadas direto do benefício — análise personalizada pela equipe Novo Horizonte.</div>
+      <div class="tags"><span class="tag">Aposentados e pensionistas</span><span class="tag">Desconto automático</span><span class="tag">Sujeito à análise</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="section-label">O que o público precisa saber</div>
+    <div class="two-col">
+      <div class="info-block" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#ddd6fe;"><div class="info-block-label">1. Benefício INSS</div><div class="info-block-value">Voltado para aposentados e pensionistas elegíveis</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#ddd6fe;"><div class="info-block-label">2. Margem disponível</div><div class="info-block-value">Limite que pode ser comprometido com parcelas — verificado pela equipe</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#ddd6fe;"><div class="info-block-label">3. Meu INSS</div><div class="info-block-value">Em alguns casos o cliente precisa desbloquear o benefício e confirmar a proposta pelo app. A equipe orienta em cada etapa.</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#ddd6fe;"><div class="info-block-label">4. Sobre o consignado</div><div class="info-block-value">Parcele em até 108 meses e comece a pagar em até 90 dias após a contratação, ou seja, em até 3 meses.</div></div>
+    </div>
+    <div class="section-label">Mensagem principal para divulgar</div>
+    <div class="alert-box" style="background:#f5f3ff;border-color:#7c3aed;color:#3b0764;">
+      "Se você é aposentado ou pensionista do INSS, pode consultar a possibilidade de contratar um consignado com a Novo Horizonte. A equipe faz a análise, verifica sua margem e orienta você em cada etapa do processo."
+    </div>
+    <div class="cta-bar" style="background:linear-gradient(135deg,#4c1d95,#7c3aed);">
+      <div class="cta-text">💬 <strong>CTA sugerido:</strong> "Quer saber se você tem margem disponível? Clique no link e fale agora com um especialista da Novo Horizonte."</div>
+    </div>
+  </div>
+</div>
+
+<!-- Garantia Veicular -->
+<div class="product-card" id="p4">
+  <div class="card-hero" style="background:linear-gradient(135deg,#fff5f5,#fff);">
+    <div class="card-icon" style="background:linear-gradient(135deg,#fee2e2,#fecaca);">🚗</div>
+    <div class="card-hero-text">
+      <div class="card-title" style="color:#7f1d1d;">Crédito com Garantia Veicular</div>
+      <div class="card-tagline">Use o valor do seu carro quitado sem precisar vender — dinheiro rápido, seguro, com o carro na sua garagem.</div>
+      <div class="tags"><span class="tag">Carro continua seu</span><span class="tag">Até R$150 mil</span><span class="tag">A partir de 1,60% a.m.</span><span class="tag">Sem comprovação de renda</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="two-col">
+      <div class="info-block" style="background:linear-gradient(135deg,#fff5f5,#fee2e2);border-color:#fecaca;"><div class="info-block-label">Valor liberado</div><div class="info-block-value">Até 100% do valor do veículo (até R$150 mil)</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#fff5f5,#fee2e2);border-color:#fecaca;"><div class="info-block-label">Taxa</div><div class="info-block-value">A partir de 1,60% ao mês</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#fff5f5,#fee2e2);border-color:#fecaca;"><div class="info-block-label">Prazo de liberação</div><div class="info-block-value">Em até 24 horas após aprovação</div></div>
+      <div class="info-block" style="background:linear-gradient(135deg,#fff5f5,#fee2e2);border-color:#fecaca;"><div class="info-block-label">Veículos aceitos</div><div class="info-block-value">Leves até 18 anos / Utilitários até 5 anos</div></div>
+    </div>
+    <div class="section-label">Requisitos</div>
+    <ul class="req-list">
+      <li><span class="req-dot" style="background:#dc2626;"></span>Veículo quitado no nome do solicitante</li>
+      <li><span class="req-dot" style="background:#dc2626;"></span>Análise automática por CPF e placa</li>
+      <li><span class="req-dot" style="background:#dc2626;"></span>Biometria facial e vistoria digital pelo celular</li>
+      <li><span class="req-dot" style="background:#dc2626;"></span>Sem comprovação de renda obrigatória</li>
+    </ul>
+    <div class="section-label">Dúvidas mais comuns</div>
+    <div class="vantagens">
+      <div class="vantagem-item" style="background:#fff5f5;border-color:#fecaca;flex-direction:column;align-items:flex-start;gap:4px;"><span style="font-weight:700;color:#7f1d1d;">Vou perder o carro?</span><span style="color:#6b7280;font-size:12px;">Não. O carro continua no nome do cliente e pode ser usado normalmente durante todo o contrato.</span></div>
+      <div class="vantagem-item" style="background:#fff5f5;border-color:#fecaca;flex-direction:column;align-items:flex-start;gap:4px;"><span style="font-weight:700;color:#7f1d1d;">Demora pra cair o dinheiro?</span><span style="color:#6b7280;font-size:12px;">Após aprovação, o valor pode cair em até 24 horas.</span></div>
+      <div class="vantagem-item" style="background:#fff5f5;border-color:#fecaca;flex-direction:column;align-items:flex-start;gap:4px;"><span style="font-weight:700;color:#7f1d1d;">Posso usar o dinheiro pra qualquer coisa?</span><span style="color:#6b7280;font-size:12px;">Sim. O dinheiro é livre — quitar dívidas, investir, reformar, abrir negócio.</span></div>
+      <div class="vantagem-item" style="background:#fff5f5;border-color:#fecaca;flex-direction:column;align-items:flex-start;gap:4px;"><span style="font-weight:700;color:#7f1d1d;">Posso quitar antes?</span><span style="color:#6b7280;font-size:12px;">Sim. É possível antecipar parcelas e pagar menos juros.</span></div>
+    </div>
+    <div class="section-label">Gatilhos para divulgação</div>
+    <ul class="req-list">
+      <li><span class="req-dot" style="background:#aaa;"></span>"Dinheiro rápido, com o carro ainda na sua garagem."</li>
+      <li><span class="req-dot" style="background:#aaa;"></span>"Seu carro pode valer mais do que você imagina!"</li>
+      <li><span class="req-dot" style="background:#aaa;"></span>"Quem tem carro quitado tem crédito. E crédito rápido."</li>
+    </ul>
+    <div class="cta-bar" style="background:linear-gradient(135deg,#7f1d1d,#dc2626);">
+      <div class="cta-text">💬 <strong>CTA sugerido:</strong> "Descubra quanto seu carro pode liberar. Clique no link e fale agora com um especialista da Novo Horizonte."</div>
+    </div>
+  </div>
+</div>
+
+</div>
 <script>
 function show(idx) {
-  document.querySelectorAll('.product-card').forEach(function(c, i) {
-    c.classList.toggle('visible', i === idx);
-  });
-  document.querySelectorAll('.tab-btn').forEach(function(b, i) {
-    b.classList.toggle('active', i === idx);
-  });
+  document.querySelectorAll('.product-card').forEach((c,i) => c.classList.toggle('visible', i===idx));
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
 }
 </script>
-</body>
-</html>
